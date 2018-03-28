@@ -1,6 +1,19 @@
 # sssh
 ssh alias creator
 
+
+## How to install
+
+```
+$ git clone https://github.com/lukluk/sssh.git
+$ cd sssh && chmod +x sssh && cp sssh /usr/local/bin
+```
+
+done
+
+
+## How it work
+
 ```
 $ sssh root@192.168.10.2
 you want create alias for 192.168.10.2 [Y/n] ?
