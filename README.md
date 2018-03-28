@@ -1,0 +1,2 @@
+# sssh
+ssh alias creator
