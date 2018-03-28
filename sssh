@@ -1,0 +1,49 @@
+#!/bin/bash
+set -- "$1" 
+IFS="@"; declare -a Array=($*) 
+User="${Array[0]}" 
+Hostname="${Array[1]}" 
+prepend() {
+   printf '%s\n' H 1i "${1}" . wq | ed -s "${2}"
+}
+dossh () {
+ ssh $User@$Hostname
+}
+if [[ $1 != *[!\ ]* ]]; then	  
+	echo "HOW TO USE"
+	echo "$ assh user@host"
+	exit
+fi
+if [[ $Hostname != *[!\ ]* ]]; then	
+ check=$(grep -w -i "Host" ~/.ssh/config | grep $1)
+ if [[ $check = *[!\ ]* ]]; then
+ 	ssh $1
+ 	exit	
+ else
+ 	echo "No alias found"
+ 	exit
+ fi
+fi
+
+checkHostname=$(grep -w -i "Hostname" ~/.ssh/config | grep $Hostname)
+
+if [[ $checkHostname = *[!\ ]* ]]; then
+ dossh 
+else  
+  read -p "you want create alias for $Hostname [Y/n] ?" -n 1 -r 
+  if [[ $REPLY =~ ^[Nn]$ ]]; then
+  	dossh
+  else
+      read -p "alias name : " -r
+      checkHost=$(grep -w -i "Host" ~/.ssh/config | grep $REPLY)
+      if [[ $checkHost = *[!\ ]* ]]; then
+	    dossh  
+	  else	  		 
+	  	prepend "    User $User" ~/.ssh/config
+	  	prepend "    Hostname $Hostname" ~/.ssh/config
+	  	prepend "Host $REPLY" ~/.ssh/config
+	  	dossh
+      fi
+      
+  fi
+fi
